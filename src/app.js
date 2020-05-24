@@ -4,11 +4,13 @@ const express = require('express');
 const app = express();
 const publicPath = path.join(__dirname, '../public');
 app.use(express.static(publicPath));
+app.set('view engine', 'hbs')
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 let user = {};
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+    res.render("index.hbs", () => {
+    });
 });
 
 io.on('connection', (socket) => {
@@ -24,22 +26,26 @@ io.on('connection', (socket) => {
         }
     })
     socket.on('send-msg', msg => {
-        if (msg.includes("About")) {
+        if (msg.includes("corona")) {
             fetch('http://141.41.235.21:1880/corona_regions/')
                 .then(response => response.json())
                 .then(data => {
-                    msg = msg.replace("About ","");
+                    msg = msg.replace("corona ", "");
                     console.log(msg);
                     socket.broadcast.emit('ask-msg', { message: msg, name: user[socket.id] });
                     socket.broadcast.emit('info-corona', data.data[msg]);
                     socket.emit('info-corona', data.data[msg]);
                 })
                 .catch(err => { })
-        } else {
+        }
+        else {
             socket.broadcast.emit('chat-msg', { message: msg, name: user[socket.id] });
         }
     })
-
+    socket.on('send-map', data => {
+        console.log(data);
+        socket.broadcast.emit('broadcast-map', data);
+    });
 });
 
-server.listen(3000);
+server.listen(8080);

@@ -7,6 +7,9 @@ body{
     justify-content: center;
     flex-direction: column;
 }
+#clear-chat-btn{
+    width: 20%;
+}
 #chatbox-form button{
     font-size: 20px;
 }
@@ -26,9 +29,5 @@ body{
     max-width: 1200px;
 }
 #msg-container div{
-    margin-top: 1px;
-    border: 0.5px solid red;
-    width: fit-content;
-    padding: 5px;
-    margin-left: 5px;
+    border-radius: 5px;
 }
