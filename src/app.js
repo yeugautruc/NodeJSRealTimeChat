@@ -4,13 +4,11 @@ const express = require('express');
 const app = express();
 const publicPath = path.join(__dirname, '../public');
 app.use(express.static(publicPath));
-app.set('view engine', 'hbs')
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 let user = {};
 app.get('/', (req, res) => {
-    res.render("index.hbs", () => {
-    });
+    res.sendFile(__dirname + '/index.html');
 });
 
 io.on('connection', (socket) => {
@@ -31,10 +29,21 @@ io.on('connection', (socket) => {
                 .then(response => response.json())
                 .then(data => {
                     msg = msg.replace("corona ", "");
-                    console.log(msg);
-                    socket.broadcast.emit('ask-msg', { message: msg, name: user[socket.id] });
+                    socket.broadcast.emit('ask-msg-corona', { message: msg, name: user[socket.id] });
                     socket.broadcast.emit('info-corona', data.data[msg]);
                     socket.emit('info-corona', data.data[msg]);
+                })
+                .catch(err => { })
+        } else if (msg.includes("show")) {
+            let location = msg;
+            let url = 'https://maps.googleapis.com/maps/api/geocode/json?&key=AIzaSyC_0nX6TjfZ03keMMM3_wTDZZ3QenuX2cc&address=' + location;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    msg = msg.replace("show ", "");
+                    socket.broadcast.emit('ask-msg-map', { message: msg, name: user[socket.id] });
+                    socket.broadcast.emit('info-map', data.results[0].geometry.location);
+                    socket.emit('info-map', data.results[0].geometry.location);
                 })
                 .catch(err => { })
         }
@@ -42,10 +51,8 @@ io.on('connection', (socket) => {
             socket.broadcast.emit('chat-msg', { message: msg, name: user[socket.id] });
         }
     })
-    socket.on('send-map', data => {
-        console.log(data);
-        socket.broadcast.emit('broadcast-map', data);
-    });
 });
 
-server.listen(8080);
+server.listen(8080, () => {
+    console.log("listen to port 8080");
+});
