@@ -31,18 +31,22 @@ io.on('connection', (socket) => {
                 .then(response => response.json())
                 .then(data => {
                     msg = msg.replace("corona ", "");
+                    msg = msg.toLowerCase();
+                    msg = msg[0].toUpperCase() + msg.slice(1);
                     socket.broadcast.emit('ask-msg-corona', { message: msg, name: user[socket.id] });
                     socket.broadcast.emit('info-corona', data.data[msg]);
                     socket.emit('info-corona', data.data[msg]);
                 })
                 .catch(err => { })
-        } else if (msg.includes("show")) {
+        } else if (msg.includes("map")) {
             let location = msg;
             let url = 'https://maps.googleapis.com/maps/api/geocode/json?&key=AIzaSyC_0nX6TjfZ03keMMM3_wTDZZ3QenuX2cc&address=' + location;
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    msg = msg.replace("show ", "");
+                    msg = msg.replace("map ", "");
+                    msg = msg.toLowerCase();
+                    msg = msg[0].toUpperCase() + msg.slice(1);
                     socket.broadcast.emit('ask-msg-map', { message: msg, name: user[socket.id] });
                     socket.broadcast.emit('info-map', data.results[0].geometry.location);
                     socket.emit('info-map', data.results[0].geometry.location);
@@ -54,11 +58,11 @@ io.on('connection', (socket) => {
         }
     })
     socket.on('disconnect', () => {
-        console.log(user[socket.id]+" disconnected");
+        console.log(user[socket.id] + " disconnected");
         socket.broadcast.emit('user-disconnect', user[socket.id]);
         delete user[socket.id];
         socket.broadcast.emit('user-list-emit', user);
-     })
+    })
 });
 
 server.listen(8080, () => {

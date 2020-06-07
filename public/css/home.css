@@ -2,24 +2,35 @@ body {
     background-color: blanchedalmond;
     font-size: 20px;
     padding: 0;
-    margin: 0;
+    margin: 0 15px;
     display: flex;
     justify-content: center;
     flex-direction: column;
 }
 
+#clear-chat-btn:hover {
+    background-color: rgba(192, 196, 238, 0.3);
+}
+
 #clear-chat-btn {
     width: 20%;
+    border-radius: 5px;
+}
+
+#chatbox-form button:hover {
+    background-color: rgba(192, 196, 238, 0.3);
 }
 
 #chatbox-form button {
     font-size: 20px;
+    border-radius: 5px;
 }
 
 #chatbox-form input {
     margin-left: 10px;
     font-size: 20px;
     padding-left: 5px;
+    border-radius: 5px;
 }
 
 #chatbox-form {
@@ -29,7 +40,7 @@ body {
 
 #msg-container {
     background-color: burlywood;
-    margin-top: 1px;
+    margin-top: 10px;
     margin-bottom: 1px;
     padding-top: 1px;
     padding-bottom: 1px;
@@ -37,10 +48,15 @@ body {
     height: 69vh;
     max-width: 1200px;
     overflow-y: scroll;
+    border-radius: 3px;
 }
 
 #msg-container div {
     border-radius: 5px;
+}
+
+.userList:hover {
+    background: rgba(156, 160, 156, 0.8);
 }
 
 .userList {
@@ -49,7 +65,13 @@ body {
     top: 2%;
     width: 300px;
     height: auto;
-    background-color: gray;
+    padding-left: 15px;
+    border-radius: 15px;
+    background: rgba(114, 98, 91, 0.8);
+    border: 8px solid rgba(191, 218, 128, 0.9);
+    font-size: 1.1em;
+    max-height: 80vh;
+    overflow-y: scroll;
 }
 
 ::-webkit-scrollbar {
@@ -57,7 +79,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: rgba(114, 98, 91, 0.1);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -70,4 +92,10 @@ body {
 
 span {
     font-size: 14px;
+}
+.help-info{
+    position: absolute;
+    bottom: 1vh;
+    left: 2vw;
+    padding: 0;
 }

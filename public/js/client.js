@@ -1,5 +1,5 @@
 
-const socket = io.connect('https://yeugautruc-11e6bb5b.localhost.run');
+const socket = io.connect('localhost:8080');
 const msgContainer = document.getElementById('msg-container');
 const msgForm = document.getElementById('chatbox-form');
 const msgInput = document.getElementById('msgInput');
@@ -77,9 +77,9 @@ msgForm.addEventListener('submit', e => {
         displayMsgClient("You asked about corona statisic of " + outmsg);
         msgContainer.scrollTo(0, msgContainer.scrollHeight);
     }
-    else if (msg.includes("show")) {
-        outmsg = msg.replace("show ", "");
-        displayMsgClient("You asked to show " + outmsg);
+    else if (msg.includes("map")) {
+        outmsg = msg.replace("map ", "");
+        displayMsgClient("You asked to show map of " + outmsg);
         msgContainer.scrollTo(0, msgContainer.scrollHeight);
     }
     else {
@@ -109,7 +109,7 @@ function displayMsgClient(msg) {
 }
 function displayMsgServer(msg, color) {
     const msgElement = document.createElement('div');
-    msgElement.setAttribute("style", "background-color:" + color + "; margin: 5px 5px 5px auto ;border: 0.5px solid red;min-width: 30vw; max-width: 60vw;width: fit-content;padding: 5px;");
+    msgElement.setAttribute("style", "background-color:" + color + "; margin: 5px 5px 5px auto ;border: 2px solid #dedede;min-width: 30vw; max-width: 60vw;width: fit-content;padding: 5px;");
     const text = document.createElement('p');
     text.innerText = msg;
     const time = document.createElement('span');
@@ -123,7 +123,7 @@ function displayMsgServer(msg, color) {
 function displayMap() {
     const mapElement = document.createElement('div');
     mapElement.setAttribute("class", "map");
-    mapElement.setAttribute("style", "background-color: orange; margin-left:auto; margin-right:5px;border: 1px solid brown; width: 500px;height:300px;");
+    mapElement.setAttribute("style", "background-color: orange; margin-left:auto; margin-right:5px;border: 2px solid brown; width: 500px;height:300px;");
     msgContainer.appendChild(mapElement);
 }
 function clearChat() {
