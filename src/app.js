@@ -21,6 +21,8 @@ io.on('connection', (socket) => {
         else {
             user[socket.id] = name;
             socket.broadcast.emit('user-connect', name);
+            socket.emit('user-list-emit', user);
+            socket.broadcast.emit('user-list-emit', user);
         }
     })
     socket.on('send-msg', msg => {
@@ -51,6 +53,12 @@ io.on('connection', (socket) => {
             socket.broadcast.emit('chat-msg', { message: msg, name: user[socket.id] });
         }
     })
+    socket.on('disconnect', () => {
+        console.log(user[socket.id]+" disconnected");
+        socket.broadcast.emit('user-disconnect', user[socket.id]);
+        delete user[socket.id];
+        socket.broadcast.emit('user-list-emit', user);
+     })
 });
 
 server.listen(8080, () => {
