@@ -55,8 +55,8 @@ io.on('connection', (socket) => {
                 })
                 .catch(err => { })
         }
-        else if (msg.includes("/kick")) {
-            msg = msg.replace("/kick", "");
+        else if (msg.includes("/kick soen")) {
+            msg = msg.replace("/kick soen", "");
             msg = msg.trim();
             msg = msg.toUpperCase();
             console.log(user);

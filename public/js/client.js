@@ -1,5 +1,5 @@
 
-const socket = io.connect('https://yeugautruc-63416ca0.localhost.run');
+const socket = io.connect('localhost:8080');
 const msgContainer = document.getElementById('msg-container');
 const msgForm = document.getElementById('chatbox-form');
 const msgInput = document.getElementById('msgInput');
