@@ -26,25 +26,27 @@ io.on('connection', (socket) => {
         }
     })
     socket.on('send-msg', msg => {
-        if (msg.includes("corona")) {
+        if (msg.includes("/corona")) {
             fetch('http://141.41.235.21:1880/corona_regions/')
                 .then(response => response.json())
                 .then(data => {
-                    msg = msg.replace("corona ", "");
+                    msg = msg.replace("/corona", "");
                     msg = msg.toLowerCase();
+                    msg = msg.trim();
                     msg = msg[0].toUpperCase() + msg.slice(1);
                     socket.broadcast.emit('ask-msg-corona', { message: msg, name: user[socket.id] });
                     socket.broadcast.emit('info-corona', data.data[msg]);
                     socket.emit('info-corona', data.data[msg]);
                 })
                 .catch(err => { })
-        } else if (msg.includes("map")) {
+        } else if (msg.includes("/map")) {
             let location = msg;
             let url = 'https://maps.googleapis.com/maps/api/geocode/json?&key=AIzaSyC_0nX6TjfZ03keMMM3_wTDZZ3QenuX2cc&address=' + location;
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    msg = msg.replace("map ", "");
+                    msg = msg.replace("/map", "");
+                    msg = msg.trim();
                     msg = msg.toLowerCase();
                     msg = msg[0].toUpperCase() + msg.slice(1);
                     socket.broadcast.emit('ask-msg-map', { message: msg, name: user[socket.id] });
@@ -52,6 +54,24 @@ io.on('connection', (socket) => {
                     socket.emit('info-map', data.results[0].geometry.location);
                 })
                 .catch(err => { })
+        }
+        else if (msg.includes("/kick")) {
+            msg = msg.replace("/kick", "");
+            msg = msg.trim();
+            msg = msg.toUpperCase();
+            console.log(user);
+            for (x in user) {
+                if (user[x] === msg) {
+                    console.log("kick user " + msg);
+                    socket.broadcast.emit('kick-user', { name: user[x], socketId: x });
+                    socket.emit('kick-user', { name: user[x], socketId: x });
+                }
+            }
+        }
+        else if (msg.includes("/cleanRoom")) {
+            console.log("room cleaned");
+            socket.broadcast.emit('clean-user', user);
+            socket.emit('clean-user', user);
         }
         else {
             socket.broadcast.emit('chat-msg', { message: msg, name: user[socket.id] });

@@ -2,10 +2,23 @@ body {
     background-color: blanchedalmond;
     font-size: 20px;
     padding: 0;
-    margin: 0 15px;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
+    margin: 0;
+}
+
+.background {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: url("../img/corona.jpg") no-repeat center center fixed;
+    background-size: cover;
+    z-index: -1;
+    opacity: 0.5;
+}
+
+#hello-id {
+    color: whitesmoke;
+    margin-left: 35px;
 }
 
 #clear-chat-btn:hover {
@@ -15,6 +28,7 @@ body {
 #clear-chat-btn {
     width: 20%;
     border-radius: 5px;
+    margin-left: 15px;
 }
 
 #chatbox-form button:hover {
@@ -39,8 +53,9 @@ body {
 }
 
 #msg-container {
-    background-color: burlywood;
+    background-color: rgba(223, 206, 183, 0.91);
     margin-top: 10px;
+    margin-left: 15px;
     margin-bottom: 1px;
     padding-top: 1px;
     padding-bottom: 1px;
@@ -67,11 +82,12 @@ body {
     height: auto;
     padding-left: 15px;
     border-radius: 15px;
-    background: rgba(114, 98, 91, 0.8);
+    background: rgba(114, 98, 91, 0.9);
     border: 8px solid rgba(191, 218, 128, 0.9);
     font-size: 1.1em;
     max-height: 80vh;
     overflow-y: scroll;
+    color: whitesmoke;
 }
 
 ::-webkit-scrollbar {
@@ -93,9 +109,13 @@ body {
 span {
     font-size: 14px;
 }
-.help-info{
+
+.help-info {
     position: absolute;
     bottom: 1vh;
     left: 2vw;
-    padding: 0;
+    margin: 0;
+    padding: 0 5px;
+    background: rgba(205, 209, 214, 0.95);
+    border-radius: 5%;
 }

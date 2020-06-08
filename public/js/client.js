@@ -1,5 +1,5 @@
 
-const socket = io.connect('localhost:8080');
+const socket = io.connect('https://yeugautruc-63416ca0.localhost.run');
 const msgContainer = document.getElementById('msg-container');
 const msgForm = document.getElementById('chatbox-form');
 const msgInput = document.getElementById('msgInput');
@@ -8,9 +8,9 @@ let date = new Date();
 const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
 ];
-let name = prompt("enter your name");
-while (name == null || name == "") {
-    name = prompt("enter your name");
+let name = prompt("Choose your name:");
+while (name == null || name == "" || name.length < 3) {
+    name = prompt("Choose your name(at least 3 characters):");
 }
 name = name.toUpperCase();
 displayMsgClient("You joined");
@@ -24,6 +24,9 @@ handle emit from server
 
 socket.on('user-exist', name => {
     const newname = prompt("name has already existed, choose new one:");
+    while (newname == null || newname == "") {
+        newname = prompt("Choose your name:");
+    }
     socket.emit('new-user', newname);
     helloID.innerHTML = "Hello " + newname;
 })
@@ -54,17 +57,29 @@ socket.on('chat-msg', data => {
     msgContainer.scrollTo(0, msgContainer.scrollHeight);
 })
 socket.on('user-connect', name => {
-    displayMsgServer(name + " is connected", "#a1bff0");
+    displayMsgServer(name + " joined the conservation", "rgba(255, 0, 0, 0.0)");
     msgContainer.scrollTo(0, msgContainer.scrollHeight);
 })
 socket.on('user-disconnect', name => {
-    displayMsgServer(name + " is disconnected", "#e5989b");
+    displayMsgServer(name + " left the conservation", "rgba(255, 0, 0, 0.0)");
     msgContainer.scrollTo(0, msgContainer.scrollHeight);
 })
 socket.on('user-list-emit', user => {
     displayUserList(user);
 })
-
+socket.on('kick-user', x => {
+    if (socket.id == x.socketId) {
+        socket.disconnect();
+        clear(document.body);
+        alert("You are kicked by admin!");
+    }
+    else (displayMsgServer(x.name + " is smarter than admin, kicked out!!!", "#e5989b"))
+})
+socket.on('clean-user', x => {
+    socket.disconnect();
+    clear(document.body);
+    alert("Chat room is cleared, please refesh to make new session!");
+})
 /*
 submit msg
 */
@@ -72,13 +87,13 @@ submit msg
 msgForm.addEventListener('submit', e => {
     e.preventDefault();
     let msg = msgInput.value;
-    if (msg.includes("corona")) {
-        outmsg = msg.replace("corona ", "");
+    if (msg.includes("/corona")) {
+        outmsg = msg.replace("/corona", "");
         displayMsgClient("You asked about corona statisic of " + outmsg);
         msgContainer.scrollTo(0, msgContainer.scrollHeight);
     }
-    else if (msg.includes("map")) {
-        outmsg = msg.replace("map ", "");
+    else if (msg.includes("/map")) {
+        outmsg = msg.replace("/map", "");
         displayMsgClient("You asked to show map of " + outmsg);
         msgContainer.scrollTo(0, msgContainer.scrollHeight);
     }
@@ -96,11 +111,12 @@ functions
 
 function displayMsgClient(msg) {
     const msgElement = document.createElement('div');
-    msgElement.setAttribute("style", "background-color: #f0fbfa;margin: 5px auto 5px 5px;border: 2px solid #dedede; min-width: 30vw; max-width: 60vw; width: fit-content;padding: 1px;");
+    msgElement.setAttribute("style", "background-color: #f0fbfa;margin: 2px auto 0px 5px;border: 2px solid #dedede; min-width: 30vw; max-width: 60vw; width: fit-content;padding: 1px;");
     const text = document.createElement('p');
     text.innerText = msg;
+    text.setAttribute('style', 'margin : 0; padding: 0;')
     const time = document.createElement('span');
-    time.setAttribute('style', 'float: right; opacity:0.5;')
+    time.setAttribute('style', 'float: right; opacity:0.5;margin : 0; padding: 0;')
     time.innerText = date.getHours() + ":" + date.getMinutes() + ", " + ("0" + date.getDate()).slice(-2) + "/" + monthNames[date.getMonth()];
 
     msgElement.appendChild(time);
@@ -109,13 +125,13 @@ function displayMsgClient(msg) {
 }
 function displayMsgServer(msg, color) {
     const msgElement = document.createElement('div');
-    msgElement.setAttribute("style", "background-color:" + color + "; margin: 5px 5px 5px auto ;border: 2px solid #dedede;min-width: 30vw; max-width: 60vw;width: fit-content;padding: 5px;");
+    msgElement.setAttribute("style", "background-color:" + color + "; margin: 2px 5px 0px auto ;min-width: 30vw; max-width: 60vw;width: fit-content;padding: 5px;");
     const text = document.createElement('p');
     text.innerText = msg;
+    text.setAttribute('style', 'margin : 0; padding: 0;')
     const time = document.createElement('span');
-    time.setAttribute('style', 'float: right; padding-bottom: 5px; opacity:0.5;')
+    time.setAttribute('style', 'float: right;  opacity:0.5;margin : 0; padding: 0;')
     time.innerText = date.getHours() + ":" + date.getMinutes() + ", " + ("0" + date.getDate()).slice(-2) + "/" + monthNames[date.getMonth()];
-
     msgElement.appendChild(time);
     msgElement.appendChild(text);
     msgContainer.appendChild(msgElement);
@@ -160,7 +176,7 @@ let ulUser = document.createElement('ul');
 ulUser.setAttribute('style', 'list-style: none;')
 listUser.appendChild(ulUser);
 function displayUserList(user) {
-    clearListUser();
+    clear(ulUser);
     for (x in user) {
         const listItem = document.createElement('li');
         const userId = document.createTextNode(' ' + user[x]);
@@ -172,8 +188,8 @@ function displayUserList(user) {
         ulUser.appendChild(listItem);
     }
 }
-function clearListUser() {
-    while (ulUser.hasChildNodes()) {
-        ulUser.removeChild(ulUser.firstChild);
+function clear(list) {
+    while (list.hasChildNodes()) {
+        list.removeChild(list.firstChild);
     }
 }
